@@ -1,15 +1,20 @@
 package net.fabricmc.example.mixin;
 
-import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
+import net.fabricmc.example.ExampleMod;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(TitleScreen.class)
 public class ExampleMixin {
-	@Inject(at = @At("HEAD"), method = "init()V")
-	private void init(CallbackInfo info) {
-		System.out.println("This line is printed by an example mod mixin!");
+	@Mixin(DefaultBiomeFeatures.class)
+	public static class DefaultBiomeFeaturesMixin {
+		@Inject(method = "addDefaultOres(Lnet/minecraft/world/biome/GenerationSettings$Builder;)V", at = @At("TAIL"))
+		private static void addDefaultOres(GenerationSettings.Builder builder, CallbackInfo ci) {
+			builder.feature(GenerationStep.Feature.UNDERGROUND_ORES, ExampleMod.WHOOL_OTHERWORLD);
+		}
 	}
 }
